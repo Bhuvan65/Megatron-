@@ -88,9 +88,13 @@ export default function MegatronModel({ coreLoad = 50 }) {
     a.explode = MathUtils.damp(a.explode, easeInOut(scroll.range(SCROLL.explode[0], SCROLL.explode[1])), 7, delta)
     a.scale = MathUtils.damp(a.scale, 1 - scroll.range(SCROLL.physics[0], 0.1), 8, delta)
 
+    // landscape: shift right of the text column; portrait: shrink and lift above the bottom text block
+    const landscape = state.size.width / state.size.height > 1.1
+    const fit = landscape ? 1 : Math.min(1, state.viewport.width / 4.8)
     g.rotation.y = a.rot
-    g.position.y = 0.2 + Math.sin(t * 1.1) * 0.05 * (1 - a.explode)
-    g.scale.setScalar(0.85 * Math.max(a.scale, 0.0001))
+    g.position.x = landscape ? Math.min(1.4, state.viewport.width * 0.12) : 0
+    g.position.y = (landscape ? 0.2 : 0.95) + Math.sin(t * 1.1) * 0.05 * (1 - a.explode)
+    g.scale.setScalar(0.85 * fit * Math.max(a.scale, 0.0001))
     g.visible = a.scale > 0.002
 
     for (let i = 0; i < PARTS.length; i++) {

@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-let state = { gravity: false, hangarOpen: false, section: 'HERO', splineActive: true, offset: 0 }
+let state = { gravity: false, hangarOpen: false, section: 'HERO', offset: 0 }
 const listeners = new Set()
 
 export const getState = () => state
@@ -25,5 +25,4 @@ export const setGravity = (gravity) => setState({ gravity })
 export const toggleGravity = () => setState((s) => ({ gravity: !s.gravity }))
 export const setHangarOpen = (hangarOpen) => setState({ hangarOpen })
 export const setSection = (section) => setState({ section })
-export const setSplineActive = (splineActive) => setState({ splineActive })
 export const setOffset = (offset) => setState({ offset })

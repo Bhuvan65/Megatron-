@@ -286,7 +286,6 @@ export default function BabylonHangar({ onClose }) {
   return (
     <div className="fade-enter" style={{ position: 'fixed', inset: 0, zIndex: 60, background: C.bg }}>
       <canvas ref={canvasRef} tabIndex={0} style={{ width: '100%', height: '100%', outline: 'none' }} />
-      <div className="scanlines" style={{ position: 'absolute', zIndex: 1 }} />
       <div className="hazard" style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 6, zIndex: 2 }} />
       <div className="panel brackets" style={{ position: 'absolute', left: 20, top: 24, zIndex: 2, padding: '10px 14px', pointerEvents: 'none' }}>
         <div className="display" style={{ fontSize: 12, color: C.amber }}>HANGAR BAY 07</div>

@@ -1,12 +1,10 @@
-import { Suspense, lazy, useMemo, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, Lightformer, PerformanceMonitor, Scroll, ScrollControls, useScroll } from '@react-three/drei'
-import { Bloom, ChromaticAberration, EffectComposer, Noise, ToneMapping, Vignette } from '@react-three/postprocessing'
-import { BlendFunction, ToneMappingMode } from 'postprocessing'
-import { Vector2 } from 'three'
+import { Bloom, EffectComposer, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { ToneMappingMode } from 'postprocessing'
 import MegatronModel from './MegatronModel.jsx'
 import PhysicsPlayground from './PhysicsPlayground.jsx'
-import SplineWidget from './SplineWidget.jsx'
 import HUD from './HUD.jsx'
 import { useTelemetry } from './useTelemetry.js'
 import { C, SCROLL, SECTIONS } from './tokens.js'
@@ -22,9 +20,8 @@ function ScrollBridge() {
     const s = getState()
     let section = SECTIONS[0][0]
     for (let i = 0; i < SECTIONS.length; i++) if (offset >= SECTIONS[i][1][0]) section = SECTIONS[i][0]
-    const splineActive = offset < 0.2
-    if (Math.abs(s.offset - offset) > 0.001 || s.section !== section || s.splineActive !== splineActive) {
-      setState({ offset: Math.round(offset * 1000) / 1000, section, splineActive })
+    if (Math.abs(s.offset - offset) > 0.001 || s.section !== section) {
+      setState({ offset: Math.round(offset * 1000) / 1000, section })
     }
   })
   return null
@@ -41,6 +38,7 @@ function Headlines() {
         <h2>Mega<em>tron</em></h2>
         <p>Hard-surface chrome armor wrapped around a live arc reactor. Scroll to power up the inspection sequence.</p>
         <div className="hazard-thin" style={{ width: 180 }} />
+        <span className="credit">Developed by Bhuvan and Tony Stark</span>
       </section>
       <section className="section-block" style={{ top: top(SCROLL.rotate) }}>
         <span className="kicker">SEQ 02 // TURNTABLE</span>
@@ -70,13 +68,10 @@ function Headlines() {
 }
 
 function Effects({ degraded }) {
-  const caOffset = useMemo(() => new Vector2(6e-4, 6e-4), [])
   return (
     <EffectComposer disableNormalPass multisampling={0}>
       <Bloom mipmapBlur luminanceThreshold={1} intensity={degraded ? 0.6 : 1.2} radius={0.7} />
-      <ChromaticAberration offset={caOffset} radialModulation={false} modulationOffset={0} />
       <Vignette offset={0.3} darkness={0.75} />
-      <Noise opacity={0.04} premultiply blendFunction={BlendFunction.SCREEN} />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
     </EffectComposer>
   )
@@ -136,7 +131,6 @@ export default function App() {
           <Effects degraded={degraded} />
         </Suspense>
       </Canvas>
-      <SplineWidget />
       <HUD telemetry={telemetry} />
       {hangarOpen && (
         <Suspense fallback={<div className="panel display" style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', color: C.cyan, fontSize: 12 }}>Pressurizing hangar…</div>}>
